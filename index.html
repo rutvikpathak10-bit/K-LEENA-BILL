@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>K. Leena Travels Bill</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bill-container">
+    <div class="header">
+      <div class="logo">K</div>
+      <div class="company-info">
+        <h1>K. LEENA TRAVELS</h1>
+        <p>#1-10-233/2, Brahmanwadi, Begumpet, Hyderabad-500016</p>
+        <p>9649115838, 9400519838</p>
+      </div>
+      <div class="qr-code"></div>
+    </div>
+
+    <div class="bill-details">
+      <div class="row">
+        <label>Bill No.:</label> <input type="text" value="10799" readonly>
+        <label>Date:</label> <input type="date">
+      </div>
+      <div class="row">
+        <label>MS:</label> <input type="text">
+      </div>
+    </div>
+
+    <h2>Journey Details</h2>
+    <div class="journey-details">
+      <div class="row">
+        <label>Passenger Name:</label> <input type="text">
+        <label>SLAB:</label> <input type="text">
+      </div>
+      <div class="row">
+        <label>Place & Tour:</label> <input type="text">
+        <label>Vehicle No.:</label> <input type="text">
+      </div>
+      <div class="row">
+        <label>Drivers Name:</label> <input type="text">
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Starting</th>
+            <th>End</th>
+            <th>Total</th>
+            <th>Extra</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Date</td>
+            <td><input type="date"></td>
+            <td><input type="date"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+          </tr>
+          <tr>
+            <td>Time</td>
+            <td><input type="time"></td>
+            <td><input type="time"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+          </tr>
+          <tr>
+            <td>Km's</td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Fare Details</h2>
+    <table class="fare-details">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Total Rs.</th>
+          <th>Ps.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Base Price</td><td><input type="number" class="fare-input"></td><td></td></tr>
+        <tr><td>Extra Time</td><td><input type="number" class="fare-input"></td><td></td></tr>
+        <tr><td>Extra Km's</td><td><input type="number" class="fare-input"></td><td></td></tr>
+        <tr><td>Toll's & Parking</td><td><input type="number" class="fare-input"></td><td></td></tr>
+        <tr><td>Driver Bhatta</td><td><input type="number" class="fare-input"></td><td></td></tr>
+        <tr><td>Rounding off</td><td><input type="number" class="fare-input"></td><td></td></tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>GRAND TOTAL:</td>
+          <td colspan="2"><input type="text" id="grand-total" readonly></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="signature-section">
+      <p>Rupees: <span id="rupees-text"></span></p>
+      <p>For K. LEENA TRAVELS</p>
+      <p>For: <input type="text"></p>
+      <p>Manager</p>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+                                   </html>
+              
