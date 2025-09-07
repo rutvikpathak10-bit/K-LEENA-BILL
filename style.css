@@ -1,17 +1,18 @@
-/* ---------- Global Page ---------- */
+/* ---------- Base ---------- */
 body {
   font-family: "Segoe UI", Arial, sans-serif;
   background: #f9fafb;
   color: #222;
   margin: 0;
-  padding: 20px;
+  padding: 15px;
 }
 
+/* Bill container */
 .bill-container {
   max-width: 900px;
-  background: #fff;
   margin: 0 auto;
-  padding: 25px 30px;
+  background: #fff;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
@@ -20,8 +21,8 @@ body {
 .header {
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 25px;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .logo {
@@ -40,51 +41,37 @@ body {
 
 .company-info h1 {
   margin: 0 0 4px;
-  font-size: 1.6rem;
-  letter-spacing: 0.5px;
+  font-size: 1.4rem;
   color: #2a4d91;
 }
 
 .company-info p {
   margin: 2px 0;
   font-size: 0.9rem;
-  color: #555;
 }
 
-/* ---------- Section Headings ---------- */
-h2 {
-  margin-top: 30px;
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-  color: #2a4d91;
-  border-bottom: 2px solid #e2e8f0;
-  padding-bottom: 4px;
-}
-
-/* ---------- Row Layout ---------- */
+/* ---------- Form Rows ---------- */
 .row {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 10px;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .row label {
   font-weight: 500;
-  margin-right: 8px;
 }
 
-/* ---------- Rounded Input Boxes ---------- */
+/* Smooth rounded input boxes */
 input[type="text"],
 input[type="number"],
 input[type="date"],
 input[type="time"] {
-  flex: 1;
-  min-width: 140px;
-  padding: 6px 10px;
+  flex: 1 1 140px;
+  padding: 6px 8px;
   border: 1px solid #d1d5db;
-  border-radius: 8px; /* smooth ends */
-  font-size: 0.95rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
   background: #fff;
   outline: none;
   transition: border 0.2s, box-shadow 0.2s;
@@ -99,15 +86,14 @@ input:focus {
 table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.85rem;
   margin-top: 10px;
-  font-size: 0.9rem;
 }
 
 table th,
 table td {
   border: 1px solid #e5e7eb;
-  padding: 6px 8px;
-  text-align: left;
+  padding: 4px 6px;
 }
 
 table th {
@@ -119,54 +105,47 @@ table td input {
   width: 100%;
   border: none;
   outline: none;
-  padding: 4px 6px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
-/* Shrink date/time/km boxes */
 table td input[type="date"],
 table td input[type="time"],
-table td input[type="number"],
-table td input[type="text"] {
-  max-width: 110px;
+table td input[type="number"] {
+  max-width: 90px;
 }
 
-/* ---------- Fare Details ---------- */
-.fare-details td input {
-  text-align: right;
-}
-
-/* ---------- Grand Total Highlight ---------- */
+/* ---------- Totals ---------- */
 #grand-total {
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   background: #fef3c7;
   border-radius: 6px;
+  padding: 4px 8px;
 }
 
-/* ---------- Signature Section ---------- */
-.signature-section {
-  margin-top: 30px;
-}
-
-.signature-section p {
-  margin: 4px 0;
-}
-
-/* ---------- Buttons ---------- */
+/* ---------- Button ---------- */
 #saveShare {
   display: inline-block;
+  margin-top: 15px;
+  padding: 8px 16px;
   background: #2a4d91;
   color: #fff;
-  padding: 8px 16px;
-  margin-top: 15px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.2s;
 }
-
 #saveShare:hover {
   background: #1d366d;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 600px) {
+  body { font-size: 0.9rem; }
+  .logo { width: 50px; height: 50px; font-size: 22px; }
+  .company-info h1 { font-size: 1.2rem; }
+  table td input[type="date"],
+  table td input[type="time"],
+  table td input[type="number"] { max-width: 80px; }
   }
