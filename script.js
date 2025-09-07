@@ -1,73 +1,74 @@
-// -------------------- Grand Total Calculation --------------------
-function updateGrandTotal() {
-  const inputs = document.querySelectorAll('.fare-input');
-  let total = 0;
+// ------- Auto KM calculation -------
+function calcKm() {
+  const start = parseFloat(document.querySelector('.km-start').value) || 0;
+  const end = parseFloat(document.querySelector('.km-end').value) || 0;
+  const total = end - start;
+  document.querySelector('.km-total').value = total > 0 ? total : '';
+}
 
-  inputs.forEach(inp => {
-    total += parseFloat(inp.value) || 0;
+// ------- Auto Time calculation -------
+function calcTime() {
+  const s = document.querySelector('.time-start').value;
+  const e = document.querySelector('.time-end').value;
+  const totalBox = document.querySelector('.time-total');
+  if (s && e) {
+    const [sh, sm] = s.split(':').map(Number);
+    const [eh, em] = e.split(':').map(Number);
+    let diff = (eh * 60 + em) - (sh * 60 + sm);
+    if (diff < 0) diff += 24 * 60; // overnight
+    const hours = Math.floor(diff / 60);
+    const mins = diff % 60;
+    totalBox.value = `${hours}h ${mins}m`;
+  } else {
+    totalBox.value = '';
+  }
+}
+
+// Attach listeners
+['.km-start', '.km-end'].forEach(sel =>
+  document.querySelector(sel).addEventListener('input', calcKm)
+);
+['.time-start', '.time-end'].forEach(sel =>
+  document.querySelector(sel).addEventListener('input', calcTime)
+);
+
+// ------- Grand total -------
+function calcGrandTotal() {
+  let sum = 0;
+  document.querySelectorAll('.fare-input').forEach(input => {
+    sum += parseFloat(input.value) || 0;
   });
-
-  const totalField = document.getElementById('grand-total');
-  const rupeesText = document.getElementById('rupees-text');
-
-  totalField.value = total;
-  rupeesText.textContent = numberToWords(total) + " only";
+  document.getElementById('grand-total').value = sum.toFixed(2);
+  document.getElementById('rupees-text').innerText = sum ? `${sum} only` : '';
 }
+document.querySelectorAll('.fare-input').forEach(inp =>
+  inp.addEventListener('input', calcGrandTotal)
+);
 
-function numberToWords(num) {
-  if (num === 0) return "Zero Rupees";
-
-  const a = [
-    "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-    "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-  ];
-  const b = [
-    "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-  ];
-
-  const toWords = (n) => {
-    if (n < 20) return a[n];
-    if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? " " + a[n % 10] : "");
-    if (n < 1000) return a[Math.floor(n / 100)] + " Hundred " + (n % 100 ? toWords(n % 100) : "");
-    if (n < 100000) return toWords(Math.floor(n / 1000)) + " Thousand " + (n % 1000 ? toWords(n % 1000) : "");
-    return n.toString(); // fallback for larger numbers
-  };
-
-  return toWords(num).trim() + " Rupees";
-}
-
-// Add event listeners to all fare input fields
-document.querySelectorAll('.fare-input').forEach(inp => {
-  inp.addEventListener('input', updateGrandTotal);
-});
-
-// -------------------- Save & Share PDF --------------------
-document.getElementById('save-share-btn').addEventListener('click', () => {
-  const element = document.querySelector('.bill-container');
-
+// ------- Save & Share -------
+function savePDF() {
+  const element = document.getElementById('bill');
   const opt = {
-    margin: 0.5,
-    filename: `K-Leena-Bill-${new Date().toISOString().slice(0, 10)}.pdf`,
+    margin: 0,
+    filename: `Bill-${document.getElementById('bill-no').value || 'New'}.pdf`,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2 },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    jsPDF: { unit: 'px', format: [794, 1123], orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
   };
 
-  // Generate PDF blob first (so we can try to share)
-  html2pdf().set(opt).from(element).outputPdf('blob').then((pdfBlob) => {
-    const pdfFile = new File([pdfBlob], opt.filename, { type: 'application/pdf' });
-
-    // If Web Share API with files is supported (mobile)
-    if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+  html2pdf().set(opt).from(element).toPdf().get('pdf').then(pdf => {
+    pdf.save();
+  }).then(() => {
+    if (navigator.share) {
       navigator.share({
-        files: [pdfFile],
         title: 'K-Leena Bill',
-        text: 'Please find attached the K-Leena Travels bill.'
-      }).catch(err => console.log('Share cancelled or failed:', err));
+        text: 'Bill generated',
+        url: window.location.href
+      });
     } else {
-      // Fallback: auto-download PDF
-      html2pdf().set(opt).from(element).save();
+      alert('PDF saved. Use your file manager or messaging app to share.');
     }
   });
-});
+                          }
     
