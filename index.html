@@ -107,7 +107,41 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="script.js"></script>
+<script src="script.js"></script><script>
+function calcKm() {
+  const start = parseFloat(document.querySelector('.km-start').value) || 0;
+  const end   = parseFloat(document.querySelector('.km-end').value) || 0;
+  const total = end - start;
+  document.querySelector('.km-total').value = total > 0 ? total : '';
+}
+
+function calcTime() {
+  const s = document.querySelector('.time-start').value;
+  const e = document.querySelector('.time-end').value;
+  if (s && e) {
+    const [sh, sm] = s.split(':').map(Number);
+    const [eh, em] = e.split(':').map(Number);
+    let diff = (eh * 60 + em) - (sh * 60 + sm);
+    if (diff < 0) diff += 24 * 60; // handle overnight trips
+    const hours = Math.floor(diff / 60);
+    const mins  = diff % 60;
+    document.querySelector('.time-total').value =
+      `${hours}h ${mins}m`;
+  } else {
+    document.querySelector('.time-total').value = '';
+  }
+}
+
+// attach listeners after DOM loads
+document.addEventListener('DOMContentLoaded', () => {
+  ['.km-start', '.km-end'].forEach(sel =>
+    document.querySelector(sel).addEventListener('input', calcKm)
+  );
+  ['.time-start', '.time-end'].forEach(sel =>
+    document.querySelector(sel).addEventListener('input', calcTime)
+  );
+});
+</script>
 </body>
   </html>
   
