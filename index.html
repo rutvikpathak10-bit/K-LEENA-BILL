@@ -1,26 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>K-Leena Travels Bill</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- html2pdf -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>K. Leena Travels Bill</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- html2pdf for PDF & share -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 1rem; }
+    .bill-container { max-width: 800px; margin: auto; border: 1px solid #ccc; padding: 1rem; }
+    .header { display: flex; align-items: center; justify-content: space-between; }
+    .company-info { text-align: center; flex: 1; }
+    .company-info h1 { margin: 0; }
+    .row { display: flex; gap: 1rem; margin: 0.3rem 0; }
+    .row label { min-width: 110px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+    th, td { border: 1px solid #ccc; padding: 0.4rem; text-align: left; }
+    .fare-details input { width: 100%; }
+    #save-share-btn { margin-top: 1rem; padding: 0.6rem 1.2rem; }
+  </style>
 </head>
 <body>
   <div class="bill-container">
-    <h1>K-Leena Travels</h1>
-    <p>Bill No: <input type="text" id="bill-no" value="10799"></p>
+    <div class="header">
+      <div class="logo" style="font-size:2rem;font-weight:bold;">K</div>
+      <div class="company-info">
+        <h1>K. LEENA TRAVELS</h1>
+        <p>#1-10-233/2, Brahmanwadi, Begumpet, Hyderabad-500016</p>
+        <p>9649115838, 9400519838</p>
+      </div>
+      <div class="qr-code" style="width:70px;height:70px;border:1px dashed #ccc;"></div>
+    </div>
 
-    <table>
+    <!-- Bill Details -->
+    <div class="bill-details">
+      <div class="row">
+        <label>Bill No.:</label> <input type="text" id="bill-no" value="10799">
+        <label>Date:</label> <input type="date" />
+      </div>
+      <div class="row">
+        <label>MS:</label> <input type="text" />
+      </div>
+    </div>
+
+    <!-- Journey Details -->
+    <h2>Journey Details</h2>
+    <div class="journey-details">
+      <div class="row">
+        <label>Passenger Name:</label> <input type="text" />
+        <label>SLAB:</label> <input type="text" />
+      </div>
+      <div class="row">
+        <label>Place & Tour:</label> <input type="text" />
+        <label>Vehicle No.:</label> <input type="text" />
+      </div>
+      <div class="row">
+        <label>Drivers Name:</label> <input type="text" />
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Starting</th>
+            <th>End</th>
+            <th>Total</th>
+            <th>Extra</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Date</td>
+            <td><input type="date" /></td>
+            <td><input type="date" /></td>
+            <td><input type="text" /></td>
+            <td><input type="text" /></td>
+          </tr>
+          <tr>
+            <td>Time</td>
+            <td><input type="time" /></td>
+            <td><input type="time" /></td>
+            <td><input type="text" /></td>
+            <td><input type="text" /></td>
+          </tr>
+          <tr>
+            <td>Km's</td>
+            <td><input type="text" /></td>
+            <td><input type="text" /></td>
+            <td><input type="text" /></td>
+            <td><input type="text" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Fare Details -->
+    <h2>Fare Details</h2>
+    <table class="fare-details">
       <thead>
-        <tr><th>Description</th><th>Amount (₹)</th></tr>
+        <tr><th>Description</th><th>Total Rs.</th></tr>
       </thead>
       <tbody>
         <tr><td>Base Price</td><td><input type="number" class="fare-input" placeholder="0"></td></tr>
         <tr><td>Extra Time</td><td><input type="number" class="fare-input" placeholder="0"></td></tr>
-        <tr><td>Extra Km</td><td><input type="number" class="fare-input" placeholder="0"></td></tr>
+        <tr><td>Extra Km's</td><td><input type="number" class="fare-input" placeholder="0"></td></tr>
         <tr><td>Toll & Parking</td><td><input type="number" class="fare-input" placeholder="0"></td></tr>
         <tr><td>Driver Bhatta</td><td><input type="number" class="fare-input" placeholder="0"></td></tr>
         <tr><td>Rounding Off</td><td><input type="number" class="fare-input" placeholder="0"></td></tr>
@@ -34,11 +117,66 @@
     </table>
 
     <p>Rupees: <span id="rupees-text"></span></p>
+    <p>For K. LEENA TRAVELS</p>
+    <p>For: <input type="text" /></p>
+    <p>Manager</p>
 
     <button id="save-share-btn">Save & Share PDF</button>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    // --- Live total calculation ---
+    function updateGrandTotal() {
+      const inputs = document.querySelectorAll('.fare-input');
+      let total = 0;
+      inputs.forEach(inp => { total += parseFloat(inp.value) || 0; });
+      document.getElementById('grand-total').value = total;
+      document.getElementById('rupees-text').textContent = numberToWords(total) + " only";
+    }
+
+    function numberToWords(num) {
+      if (num === 0) return "Zero Rupees";
+      const a = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+                 "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+      const b = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+      const toWords = (n) => {
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n/10)] + (n%10 ? " " + a[n%10] : "");
+        if (n < 1000) return a[Math.floor(n/100)] + " Hundred " + (n%100 ? toWords(n%100) : "");
+        if (n < 100000) return toWords(Math.floor(n/1000)) + " Thousand " + (n%1000 ? toWords(n%1000) : "");
+        return n;
+      };
+      return toWords(num).trim() + " Rupees";
+    }
+
+    document.querySelectorAll('.fare-input').forEach(inp =>
+      inp.addEventListener('input', updateGrandTotal)
+    );
+
+    // --- Save & Share ---
+    document.getElementById('save-share-btn').addEventListener('click', () => {
+      const element = document.querySelector('.bill-container');
+      const opt = {
+        margin: 0.5,
+        filename: `K-Leena-Bill-${new Date().toISOString().slice(0,10)}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).outputPdf('blob').then((pdfBlob) => {
+        const pdfFile = new File([pdfBlob], opt.filename, { type: 'application/pdf' });
+        if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+          navigator.share({
+            files: [pdfFile],
+            title: 'K-Leena Bill',
+            text: 'Please find attached the K-Leena Travels bill.'
+          }).catch(err => console.log('Share cancelled:', err));
+        } else {
+          html2pdf().set(opt).from(element).save(); // fallback download
+        }
+      });
+    });
+  </script>
 </body>
           </html>
-          
+                  
