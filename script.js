@@ -1,74 +1,68 @@
-// ------- Auto KM calculation -------
+// --------- KM & TIME AUTO CALC -----------
 function calcKm() {
   const start = parseFloat(document.querySelector('.km-start').value) || 0;
-  const end = parseFloat(document.querySelector('.km-end').value) || 0;
+  const end   = parseFloat(document.querySelector('.km-end').value) || 0;
   const total = end - start;
   document.querySelector('.km-total').value = total > 0 ? total : '';
 }
 
-// ------- Auto Time calculation -------
 function calcTime() {
   const s = document.querySelector('.time-start').value;
   const e = document.querySelector('.time-end').value;
-  const totalBox = document.querySelector('.time-total');
   if (s && e) {
     const [sh, sm] = s.split(':').map(Number);
     const [eh, em] = e.split(':').map(Number);
     let diff = (eh * 60 + em) - (sh * 60 + sm);
-    if (diff < 0) diff += 24 * 60; // overnight
+    if (diff < 0) diff += 24 * 60; // overnight trip
     const hours = Math.floor(diff / 60);
-    const mins = diff % 60;
-    totalBox.value = `${hours}h ${mins}m`;
+    const mins  = diff % 60;
+    document.querySelector('.time-total').value = `${hours}h ${mins}m`;
   } else {
-    totalBox.value = '';
+    document.querySelector('.time-total').value = '';
   }
 }
 
-// Attach listeners
-['.km-start', '.km-end'].forEach(sel =>
-  document.querySelector(sel).addEventListener('input', calcKm)
-);
-['.time-start', '.time-end'].forEach(sel =>
-  document.querySelector(sel).addEventListener('input', calcTime)
-);
-
-// ------- Grand total -------
+// --------- FARE GRAND TOTAL -----------
 function calcGrandTotal() {
-  let sum = 0;
+  let total = 0;
   document.querySelectorAll('.fare-input').forEach(input => {
-    sum += parseFloat(input.value) || 0;
+    const val = parseFloat(input.value);
+    if (!isNaN(val)) total += val;
   });
-  document.getElementById('grand-total').value = sum.toFixed(2);
-  document.getElementById('rupees-text').innerText = sum ? `${sum} only` : '';
+  document.getElementById('grand-total').value = total.toFixed(2);
 }
-document.querySelectorAll('.fare-input').forEach(inp =>
-  inp.addEventListener('input', calcGrandTotal)
-);
 
-// ------- Save & Share -------
-function savePDF() {
-  const element = document.getElementById('bill');
-  const opt = {
-    margin: 0,
-    filename: `Bill-${document.getElementById('bill-no').value || 'New'}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'px', format: [794, 1123], orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-  };
+// --------- INIT LISTENERS -----------
+document.addEventListener('DOMContentLoaded', () => {
+  // Km & time rows
+  ['.km-start', '.km-end'].forEach(sel =>
+    document.querySelector(sel).addEventListener('input', calcKm)
+  );
+  ['.time-start', '.time-end'].forEach(sel =>
+    document.querySelector(sel).addEventListener('input', calcTime)
+  );
 
-  html2pdf().set(opt).from(element).toPdf().get('pdf').then(pdf => {
-    pdf.save();
-  }).then(() => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'K-Leena Bill',
-        text: 'Bill generated',
-        url: window.location.href
-      });
-    } else {
-      alert('PDF saved. Use your file manager or messaging app to share.');
-    }
-  });
-                          }
-    
+  // Fare table
+  document.querySelectorAll('.fare-input').forEach(input =>
+    input.addEventListener('input', calcGrandTotal)
+  );
+
+  // optional: recalc once on load
+  calcGrandTotal();
+});
+
+// --------- SAVE & SHARE BUTTON -----------
+async function saveAndShare() {
+  // use html2canvas & jsPDF if you already added them, or implement
+  // your existing pdf logic here
+  const bill = document.querySelector('.bill-container');
+  const canvas = await html2canvas(bill, {scale: 2});
+  const imgData = canvas.toDataURL('image/png');
+  const pdf = new jspdf.jsPDF('p','pt','a4');
+  const imgProps = pdf.getImageProperties(imgData);
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  pdf.save('K_Leena_Bill.pdf');
+      }
+      
