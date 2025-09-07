@@ -1,4 +1,4 @@
-/* ---- Global ---- */
+/* ---------- Global Page ---------- */
 body {
   font-family: "Segoe UI", Arial, sans-serif;
   background: #f9fafb;
@@ -16,7 +16,7 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* ---- Header ---- */
+/* ---------- Header ---------- */
 .header {
   display: flex;
   align-items: center;
@@ -51,7 +51,7 @@ body {
   color: #555;
 }
 
-/* ---- Sections ---- */
+/* ---------- Section Headings ---------- */
 h2 {
   margin-top: 30px;
   margin-bottom: 10px;
@@ -61,6 +61,7 @@ h2 {
   padding-bottom: 4px;
 }
 
+/* ---------- Row Layout ---------- */
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -73,16 +74,28 @@ h2 {
   margin-right: 8px;
 }
 
-.row input {
+/* ---------- Rounded Input Boxes ---------- */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"] {
   flex: 1;
   min-width: 140px;
-  padding: 6px 8px;
+  padding: 6px 10px;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border-radius: 8px; /* smooth ends */
   font-size: 0.95rem;
+  background: #fff;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
-/* ---- Table ---- */
+input:focus {
+  border-color: #2a4d91;
+  box-shadow: 0 0 0 2px rgba(42,77,145,0.15);
+}
+
+/* ---------- Tables ---------- */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -102,7 +115,7 @@ table th {
   font-weight: 600;
 }
 
-table input {
+table td input {
   width: 100%;
   border: none;
   outline: none;
@@ -110,27 +123,28 @@ table input {
   font-size: 0.9rem;
 }
 
-/* Keep columns smaller for date/time/km */
+/* Shrink date/time/km boxes */
 table td input[type="date"],
 table td input[type="time"],
 table td input[type="number"],
 table td input[type="text"] {
-  max-width: 100px;
+  max-width: 110px;
 }
 
-/* ---- Fare Details ---- */
+/* ---------- Fare Details ---------- */
 .fare-details td input {
   text-align: right;
 }
 
-/* ---- Grand Total ---- */
+/* ---------- Grand Total Highlight ---------- */
 #grand-total {
   font-weight: bold;
   font-size: 1.1rem;
   background: #fef3c7;
+  border-radius: 6px;
 }
 
-/* ---- Signature ---- */
+/* ---------- Signature Section ---------- */
 .signature-section {
   margin-top: 30px;
 }
@@ -139,16 +153,16 @@ table td input[type="text"] {
   margin: 4px 0;
 }
 
-/* ---- Buttons ---- */
+/* ---------- Buttons ---------- */
 #saveShare {
   display: inline-block;
   background: #2a4d91;
   color: #fff;
-  padding: 8px 14px;
+  padding: 8px 16px;
   margin-top: 15px;
   font-size: 0.95rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
